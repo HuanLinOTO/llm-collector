@@ -1,30 +1,35 @@
 <template>
     <div class="container">
-      <form @submit.prevent="handleSubmit">
-        <div>
-          <label for="outputCount">字幕数量:</label>
-          <n-input-number v-model:value="outputCount" clearable />
-        </div>
-        <div>
-          <label for="notesCount">侧重点/其他 数量:</label>
-          <n-input-number v-model:value="notesCount" clearable />
-        </div>
-  
-        <n-card class="cards" v-for="(output, index) in form.output" :key="index">
-          英文字幕 {{ index + 1 }}:
-          <n-input v-model:value="form.output[index].script" />
-  
-          中文字幕 {{ index + 1 }}:
-          <n-input v-model:value="form.output[index].script_cn" />
-        </n-card>
-  
-        <div v-for="(note, index) in form.notes" :key="index">
-          侧重点/其他 {{ index + 1 }}:
-          <n-input v-model:value="form.notes[index].note" />
-        </div>
-  
-        <n-button class="submit-btn" type="success" @click="handleSubmit">下载文件</n-button>
-      </form>
+      原视频字幕
+
+      <n-input
+        v-model:value="raw_script"
+        type="textarea"
+      />
+
+      <div>
+        <label for="outputCount">字幕数量:</label>
+        <n-input-number v-model:value="outputCount" clearable />
+      </div>
+      <div>
+        <label for="notesCount">侧重点/其他 数量:</label>
+        <n-input-number v-model:value="notesCount" clearable />
+      </div>
+
+      <n-card class="cards" v-for="(output, index) in form.output" :key="index">
+        英文字幕 {{ index + 1 }}:
+        <n-input v-model:value="form.output[index].script" type="textarea"/>
+
+        中文字幕 {{ index + 1 }}:
+        <n-input v-model:value="form.output[index].script_cn" type="textarea"/>
+      </n-card>
+
+      <div v-for="(note, index) in form.notes" :key="index">
+        侧重点/其他 {{ index + 1 }}:
+        <n-input v-model:value="form.notes[index].note" type="textarea"/>
+      </div>
+
+      <n-button class="submit-btn" type="success" @click="handleSubmit">下载文件</n-button>
     </div>
 </template>
 
@@ -33,6 +38,8 @@ import { reactive, ref, watch } from 'vue';
 import { useMessage } from "naive-ui"
 
 const message = useMessage();
+
+const raw_script = ref('');
 
 const form = reactive({
   output: [
@@ -67,9 +74,15 @@ const handleSubmit = () => {
       }
     }
   } 
+
+  if (!raw_script.value) {
+    message.info('请填写原视频字幕');
+    return;
+  }
   
   // 把 form 变成 .json 文件下载下来，取名为时间戳
-  const data = JSON.stringify(form);
+
+  const data = JSON.stringify({...form, raw_script: raw_script.value}); 
   const blob = new Blob([data], { type: 'application/json' });
 
   const url = URL.createObjectURL(blob);

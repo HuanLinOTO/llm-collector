@@ -7,23 +7,25 @@
         type="textarea"
       />
 
-      <div>
-        <label for="outputCount">字幕数量:</label>
+      <!-- <div>
+        字幕数量:
         <n-input-number v-model:value="outputCount" clearable />
-      </div>
+      </div> -->
+      
+      <n-h1>以下均为 AI 输出结果</n-h1>
+
+      <n-card class="cards" v-for="(item, key) in form.output" :key="key">
+        英文字幕 {{ key2desc[key] }}:
+        <n-input v-model:value="form.output[key].script" type="textarea"/>
+        
+        中文字幕 {{ key2desc[key] }}:
+        <n-input v-model:value="form.output[key].script_cn" type="textarea"/>
+      </n-card>
+      
       <div>
-        <label for="notesCount">侧重点/其他 数量:</label>
+        侧重点/其他 数量:
         <n-input-number v-model:value="notesCount" clearable />
       </div>
-
-      <n-card class="cards" v-for="(output, index) in form.output" :key="index">
-        英文字幕 {{ index + 1 }}:
-        <n-input v-model:value="form.output[index].script" type="textarea"/>
-
-        中文字幕 {{ index + 1 }}:
-        <n-input v-model:value="form.output[index].script_cn" type="textarea"/>
-      </n-card>
-
       <div v-for="(note, index) in form.notes" :key="index">
         侧重点/其他 {{ index + 1 }}:
         <n-input v-model:value="form.notes[index].note" type="textarea"/>
@@ -41,13 +43,42 @@ const message = useMessage();
 
 const raw_script = ref('');
 
+const key2desc = {
+  hook: '钩子',
+  desc: '产品介绍',
+  share: '产品背书(安利)',
+  up: '提出问题/制造焦虑',
+  solution: '解决焦虑/产品使用',
+  cta: 'CTA'
+};
+
 const form = reactive({
-  output: [
-    {
+  output: {
+    hook: {
       script: '',
       script_cn: ''
-    }
-  ],
+    },
+    desc: {
+      script: '',
+      script_cn: ''
+    },
+    share: {
+      script: '',
+      script_cn: ''
+    },
+    up: {
+      script: '',
+      script_cn: ''
+    },
+    solution: {
+      script: '',
+      script_cn: ''
+    },
+    cta: {
+      script: '',
+      script_cn: ''
+    },
+  },
   notes: [
     {
       note: ''

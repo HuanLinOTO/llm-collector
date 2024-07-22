@@ -6,8 +6,7 @@
   </n-message-provider>
 </template>
 
-<script lang="ts" setup>
-import { ref } from 'vue';
+<script setup>
 import Form from "./components/form.vue";
 </script>
 
